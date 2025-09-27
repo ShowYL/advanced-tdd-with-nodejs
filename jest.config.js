@@ -17,13 +17,17 @@ export default {
       }
     }]
   },
-  moduleNameMapping: {
-    '^@domain/(.*)$': '<rootDir>/src/domain/$1',
-    '^@application/(.*)$': '<rootDir>/src/application/$1',
-    '^@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',
-    '^@presentation/(.*)$': '<rootDir>/src/presentation/$1',
-    '^@shared/(.*)$': '<rootDir>/src/shared/$1'
+  // the tricky part :/
+  // test files are in the root directory, but src files are in the src directory
+  // there will be a lot of "Cannot find module" errors if we don't do this
+  modulePaths: ['<rootDir>/src'],
+  moduleDirectories: ['node_modules', '<rootDir>/src'],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1'
   },
+  //   a simpler approach - let's add a specific moduleNameMapper just to handle the
+  // .js extension issue and keep the test imports simple.
+  //
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   collectCoverageFrom: [
     'src/**/*.ts',
