@@ -2,9 +2,11 @@ import { Entity } from '../../shared/types/common.js';
 import { UserId } from '../value-objects/user-id.js';
 import { Email } from '../value-objects/email.js';
 import { UserName } from '../value-objects/user-name.js';
+import { emailValidatorService } from '../services/emailValidatorService.js';
 
+// ce qu'on vous apprend de base: https://www.typescriptlang.org/docs/handbook/2/classes.html
 
-// inspiration: https://medium.com/@ezequiel/immutability-and-builders-with-typescript-b69a51c94e8c
+// ce qui est plus moderne (builder pattern) : https://medium.com/@ezequiel/immutability-and-builders-with-typescript-b69a51c94e8c
 
 export class User implements Entity<UserId> {
   private constructor(
@@ -20,6 +22,11 @@ export class User implements Entity<UserId> {
     name: UserName,
     id?: UserId
   ): User {
+    //verify that email is valid using the validator service 
+    const validator = new emailValidatorService();
+    if (!validator.isValid(email )) {
+      throw new Error('Email domain not allowed');
+    }
     const now = new Date();
     return new User(id || UserId.generate(), email, name, now, now);
   }
