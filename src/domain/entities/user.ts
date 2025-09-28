@@ -3,16 +3,17 @@ import { UserId } from '../value-objects/user-id.js';
 import { Email } from '../value-objects/email.js';
 import { UserName } from '../value-objects/user-name.js';
 
-export interface UserProps {
-  id: UserId;
-  email: Email;
-  name: UserName;
-  createdAt: Date;
-  updatedAt: Date;
-}
+
+// inspiration: https://medium.com/@ezequiel/immutability-and-builders-with-typescript-b69a51c94e8c
 
 export class User implements Entity<UserId> {
-  private constructor(private readonly props: UserProps) {}
+  private constructor(
+    public readonly id: UserId,
+    public readonly email: Email,
+    public readonly name: UserName,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date
+  ) {}
 
   public static create(
     email: Email,
@@ -20,55 +21,40 @@ export class User implements Entity<UserId> {
     id?: UserId
   ): User {
     const now = new Date();
-    return new User({
-      id: id || UserId.generate(),
-      email,
-      name,
-      createdAt: now,
-      updatedAt: now,
-    });
+    return new User(id || UserId.generate(), email, name, now, now);
   }
 
-  public static reconstitute(props: UserProps): User {
-    return new User(props);
+  public static reconstitute(
+    id: UserId,
+    email: Email,
+    name: UserName,
+    createdAt: Date,
+    updatedAt: Date
+  ): User {
+    return new User(id, email, name, createdAt, updatedAt);
   }
 
-  // Getters
-  public get id(): UserId {
-    return this.props.id;
-  }
+  // Public readonly fields (no getters)
 
-  public get email(): Email {
-    return this.props.email;
-  }
-
-  public get name(): UserName {
-    return this.props.name;
-  }
-
-  public get createdAt(): Date {
-    return this.props.createdAt;
-  }
-
-  public get updatedAt(): Date {
-    return this.props.updatedAt;
-  }
-
-  // Business methods
+  // Business methods (immutable updates)
   public updateEmail(newEmail: Email): User {
-    return new User({
-      ...this.props,
-      email: newEmail,
-      updatedAt: new Date(),
-    });
+    return new User(
+      this.id,
+      newEmail,
+      this.name,
+      this.createdAt,
+      new Date()
+    );
   }
 
   public updateName(newName: UserName): User {
-    return new User({
-      ...this.props,
-      name: newName,
-      updatedAt: new Date(),
-    });
+    return new User(
+      this.id,
+      this.email,
+      newName,
+      this.createdAt,
+      new Date()
+    );
   }
 
   public equals(other: Entity<UserId>): boolean {

@@ -1,1 +1,1 @@
-export { User, type UserProps } from './user.js';
+export { User } from './user.js';
