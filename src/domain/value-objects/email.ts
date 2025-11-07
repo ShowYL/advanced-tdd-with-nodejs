@@ -16,11 +16,8 @@ export class Email extends ValueObject<string> {
   }
 
   public static isValid(email: string): boolean {
-    return typeof email === 'string' && 
-           email.length > 0 && 
-           email.length <= 254 && 
-           !Email.hasConsecutiveDots(email) &&
-           Email.EMAIL_REGEX.test(email);
+    return email.length > 0 && email.length <= 254 && !Email.hasConsecutiveDots(email)
+       // &&  Email.EMAIL_REGEX.test(email);
   }
 
   public static create(email: string): Email {

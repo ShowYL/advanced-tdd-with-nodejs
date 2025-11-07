@@ -33,6 +33,8 @@ describe('Email Value Object', () => {
     });
 
     it('should return false for invalid emails', () => {
+      // @ts-ignore
+      expect(Email.isValid(false)).toBe(false);
       expect(Email.isValid('')).toBe(false);
       expect(Email.isValid('invalid')).toBe(false);
       expect(Email.isValid('test@')).toBe(false);
