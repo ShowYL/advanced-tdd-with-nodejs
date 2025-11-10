@@ -8,11 +8,12 @@ export class Email extends ValueObject<string> {
   }
 
   constructor(email: string) {
+    const normalized = email.trim();
 
-    if (!Email.isValid(email)) {
-      throw new Error(`Invalid email format: ${email}`);
+    if (!Email.isValid(normalized)) {
+      throw new Error(`Invalid email format: ${normalized}`);
     }
-    super(email.trim().toLowerCase());
+    super(normalized.toLowerCase());
   }
 
   public static isValid(email: string): boolean {
