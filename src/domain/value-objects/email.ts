@@ -1,4 +1,6 @@
+import { AntiSpamPort } from '@domain/ports/anti-spam.port.js';
 import { ValueObject } from '../../shared/types/common.js';
+import { Failure, Result, Success } from '@shared/types/result.js';
 
 export class Email extends ValueObject<string> {
   private static readonly EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -22,6 +24,14 @@ export class Email extends ValueObject<string> {
 
   public static create(email: string): Email {
     return new Email(email);
+  }
+
+  public static async createWithoutSpam(email: string, antiSpamService: AntiSpamPort): Promise<Result<Email, string>>{
+    if (await antiSpamService.isBlocked(email)){
+      return new Failure("This email is a spam: " + email);
+    }
+
+    return new Success(new Email(email));
   }
 
   public getDomain(): string {
