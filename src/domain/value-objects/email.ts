@@ -12,7 +12,7 @@ export class Email extends ValueObject<string> {
     if (!Email.isValid(email)) {
       throw new Error(`Invalid email format: ${email}`);
     }
-    super(email.toLowerCase());
+    super(email.trim().toLowerCase());
   }
 
   public static isValid(email: string): boolean {
