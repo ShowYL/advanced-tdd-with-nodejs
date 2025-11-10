@@ -8,7 +8,7 @@ import { AntiSpamPort } from '../../domain/ports/anti-spam.port.js';
  *
  * Blocks emails with:
  * - Specific patterns (e.g., "blocked@", "spam@")
- * - Blocked domains (e.g., "spam.com", "fake.com")
+ * - blocked domains (e.g., "spam.com", "fake.com")
  *
  * This allows us to test the Email and User creation logic
  * without depending on external services.
@@ -25,10 +25,17 @@ export class MockAntiSpamAdapter implements AntiSpamPort {
    */
   async isBlocked(email: string): Promise<boolean> {
     // Check blocked patterns first
-
+    for (const pattern of this.blockedPatterns) {
+      if (email.startsWith(pattern)) {
+        return true;
+      }
+    }
 
     // Check blocked domains
-
+    const domain = email.split('@')[1];
+    if (domain && this.blockedDomains.includes(domain)) {
+      return true;
+    }
 
     // Email is allowed
     return false;
