@@ -19,19 +19,19 @@ export class InMemoryBannedEmailRepository implements BannedEmailRepository {
   private bannedEmails: Set<string> = new Set();
 
   async isBanned(email: string): Promise<boolean> {
-  throw new Error('Method not implemented.');
+    return this.bannedEmails.has(email.toLowerCase());
   }
 
   async ban(email: string): Promise<void> {
-    throw new Error('Method not implemented.');
+    this.bannedEmails.add(email.toLowerCase());
   }
 
   async unban(email: string): Promise<void> {
-    throw new Error('Method not implemented.');
+    this.bannedEmails.delete(email.toLowerCase());
   }
 
   async getAllBanned(): Promise<string[]> {
-    throw new Error('Method not implemented.');
+    return Array.from(this.bannedEmails);
   }
 
   async clear(): Promise<void> {
